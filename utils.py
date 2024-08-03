@@ -2,7 +2,7 @@ import pandas as pd
 
 def getOption(menu, options):
     """
-        Muestra un menú y permite seleccionar entre las opciones disponibles, verificando que sea una opción válida
+        Muestra un menú y permite seleccionar entre las opciones disponibles, verificando que sea una opción válida.
     """
     option = 0
     
@@ -77,7 +77,7 @@ def identifyVariables(X):
 def getNulls(X):
     """
         Para un dataframe dado, identifica las variables en las que existan valores nulos y cuántos hay.
-        Devuelve una lista de tuplas de la forma (variable, cantidad_nulos)
+        Devuelve una lista de tuplas de la forma (variable, cantidad_nulos).
     """
     nulls = [(col,X.isnull().sum()[col],X.isnull().sum()[col]/X.shape[0]) for col in X.columns]
     nulls = [n for n in nulls if n[1] > 0]
@@ -86,9 +86,8 @@ def getNulls(X):
 def getStatistics(X, numerics):
     """
     Muestra las estadísticas descriptivas para cada variable numérica en el dataframe X.
-    Devuelve un diccionario de la forma:
-        col: (media, mediana, moda, desviación estándar)
-    
+    Devuelve un diccionario de la forma: 
+    { var: (media, mediana, moda, desviación estándar) }
     para cada variable.
     """
     statistics = {}
