@@ -1,4 +1,5 @@
 import pandas as pd
+import matplotlib.pyplot as plt
 
 def getOption(menu, options):
     """
@@ -16,8 +17,6 @@ def getOption(menu, options):
         except:
             print("Debe ingresar un número entero válido.\n")
     return option
-    
-    
 
 def readCSV(path):
     """
@@ -101,3 +100,42 @@ def getStatistics(X, numerics):
         statistics[col] = (mean, median, mode, std)
 
     return statistics
+
+def getPlotSingleVariable(X, var, categorical=False, continuous=False, discrete=True):
+    """
+        Permite seleccionar y mostrar el gráfico apropiado según el tipo de variable.
+        Versión para una única variable solamente.
+    """
+    
+    types = ["Gráfico de Barras","Gráfico de Torta","Gráfico de Pareto", "Gráfico de Puntos"] \
+        if categorical else ["Histograma", "Gráfico de Densidad", "Box Plot"] if continuous \
+            else ["Gráfico de Barras", "Histograma", "Gráfico de Puntos", "Gráfico de Pareto", "Box Plot"]
+            
+    for i, graph in enumerate(types, 1):
+        print(f"{i}. {graph}")
+    option = getOption("Seleccione una tipo de gráfico:",len(types))
+    
+    chosen = types[option-1]
+    
+    if chosen == "Gráfico de Barras":
+        frequency = X[var].value_counts()
+        
+        plt.figure(figsize=(10, 6))
+        plt.bar(frequency.index, frequency.values, color='skyblue')
+
+        plt.title(f'Frecuencia de variable {var}')
+        plt.xlabel(var)
+        plt.ylabel('Frecuencia')
+
+        plt.xticks(rotation=45, ha='right')
+
+        plt.show()
+    elif chosen == "Histograma":
+        plt.figure(figsize=(10, 6))
+        plt.hist(X[var], bins=10, color='skyblue', edgecolor='black')
+
+        plt.title(f'Histograma para variable {var}')
+        plt.xlabel(var)
+        plt.ylabel('Frecuencia')
+
+        plt.show()

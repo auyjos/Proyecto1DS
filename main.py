@@ -1,3 +1,15 @@
+'''
+    Proyecto DATA SCIENCE - Fase 1
+    Se solicita realizar de forma automatizada el Análisis Exploratorio de Datos de un dataframe dado en forma de archivo.csv
+    
+    Grupo 4:
+        - Herber Sebastián Silva Muñoz
+        - Eunice Anahí Mata Ixcayau
+        - José Andrés Auyón Cóbar
+        - Erick Stiv Junior Guerra Muñoz
+'''
+
+# Importación de librerías necesarias
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -48,5 +60,43 @@ if len(statistics) > 0:
         
 option = getOption("¿Desea generar gráficos?\n1. Sí\n2. No\n", 2)
 
+if option == 2:
+    print("¡Gracias por utilizar el programa!")
+    sys.exit()
 
-    
+graphing = True
+
+while(graphing):
+
+    chosen = []
+    choosing = True
+
+    while choosing:
+        variables = [col for col in list(X.columns) if col not in chosen]
+        for i, col in enumerate(variables, 1):
+            print(f"{i}. {col}")
+
+        option = getOption("Seleccione una variable:",len(variables))
+
+        var = variables[option-1]
+        chosen.append(var)
+
+        option = getOption("¿Seleccionar variable adicional?\n1. Sí\n2. No\n", 2)
+
+        if option == 2:
+            choosing = False
+            
+    if len(chosen) == 1:
+        getPlotSingleVariable(X, chosen[0], chosen[0] in categorical, chosen[0] in continuous, chosen[0] in discreet)
+        
+    option = getOption("¿Realizar otro gráfico?\n1. Sí\n2. No\n", 2)
+
+    if option == 2:
+        graphing = False
+        print("¡Gracias por utilizar el programa!")
+
+        
+        
+
+
+        
