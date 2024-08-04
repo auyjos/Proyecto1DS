@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 
 def getOption(menu, options):
     """
@@ -107,9 +108,9 @@ def getPlotSingleVariable(X, var, categorical=False, continuous=False, discrete=
         Versión para una única variable solamente.
     """
     
-    types = ["Gráfico de Barras","Gráfico de Torta","Gráfico de Pareto", "Gráfico de Puntos"] \
+    types = ["Gráfico de Barras","Gráfico de Torta","Gráfico de Pareto"] \
         if categorical else ["Histograma", "Gráfico de Densidad", "Box Plot"] if continuous \
-            else ["Gráfico de Barras", "Histograma", "Gráfico de Puntos", "Gráfico de Pareto", "Box Plot"]
+            else ["Gráfico de Barras", "Histograma", "Gráfico de Pareto", "Box Plot"]
             
     for i, graph in enumerate(types, 1):
         print(f"{i}. {graph}")
@@ -138,4 +139,54 @@ def getPlotSingleVariable(X, var, categorical=False, continuous=False, discrete=
         plt.xlabel(var)
         plt.ylabel('Frecuencia')
 
+        plt.show()
+    elif chosen == "Gráfico de Pareto":
+        frequency = X[var].value_counts()
+        frequency = frequency.sort_values(ascending=False)
+        
+        porcentaje_acumulado = frequency.cumsum() / frequency.sum() * 100
+
+        fig, ax1 = plt.subplots(figsize=(10, 6))
+        
+        ax1.bar(frequency.index.astype(str), frequency, color='skyblue', edgecolor='black')
+        ax1.set_xlabel(var)
+        ax1.set_ylabel('Frecuencia', color='skyblue')
+        ax1.tick_params(axis='y', labelcolor='skyblue')
+
+        ax2 = ax1.twinx()
+        ax2.plot(frequency.index.astype(str), porcentaje_acumulado, color='red', marker='o', linestyle='--')
+        ax2.set_ylabel('Porcentaje Acumulado (%)', color='red')
+        ax2.tick_params(axis='y', labelcolor='red')
+
+        plt.title(f'Gráfico de Pareto para {var}')
+        plt.show()
+    elif chosen == "Box Plot":
+        plt.figure(figsize=(10, 6))
+        plt.boxplot(X[var].dropna(), vert=False, patch_artist=True,
+            boxprops=dict(facecolor='skyblue', color='black'),
+            whiskerprops=dict(color='black'),
+            capprops=dict(color='black'),
+            medianprops=dict(color='red'))
+        
+        plt.title(f'Box Plot para {var}')
+        plt.xlabel(var)
+        
+        plt.show()
+        
+    elif chosen == "Gráfico de Torta":
+        frequency = X[var].value_counts()
+        
+        plt.figure(figsize=(8, 8))
+        plt.pie(frequency, labels=frequency.index, autopct='%1.1f%%', colors=plt.cm.Paired(range(len(frequency))))
+
+        plt.title(f'Gráfico de Torta para {var}')
+        plt.show()
+    
+    elif chosen == "Gráfico de Densidad":
+        plt.figure(figsize=(10, 6))
+        sns.kdeplot(X[var].dropna(), fill=True, color='skyblue')
+        
+        plt.title(f'Gráfico de Densidad para {var}')
+        plt.xlabel(var)
+        plt.ylabel('Densidad')
         plt.show()

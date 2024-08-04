@@ -86,11 +86,19 @@ while(graphing):
         if option == 2:
             choosing = False
             
-    if len(chosen) == 1:
-        getPlotSingleVariable(X, chosen[0], chosen[0] in categorical, chosen[0] in continuous, chosen[0] in discreet)
-        
-    option = getOption("¿Realizar otro gráfico?\n1. Sí\n2. No\n", 2)
+    graphingThis = True
+    
+    while graphingThis:
+            
+        if len(chosen) == 1:
+            getPlotSingleVariable(X, chosen[0], chosen[0] in categorical, chosen[0] in continuous, chosen[0] in discreet)
+            
+        option = getOption("¿Realizar otro gráfico para esta selección?\n1. Sí\n2. No\n", 2)
+    
+        if option == 2:
+            graphingThis = False
 
+    option = getOption("¿Realizar graficar otra selección de variables?\n1. Sí\n2. No\n", 2)
     if option == 2:
         graphing = False
         print("¡Gracias por utilizar el programa!")
