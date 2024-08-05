@@ -259,3 +259,89 @@ def getPlotSingleVariable(X, var, categorical=False, continuous=False, discrete=
         plt.xlabel(var)
         plt.ylabel('Densidad')
         plt.show()
+
+
+def getPlotTwoVariables(X, var1, var2, categorical, continuous, discreet):
+    """
+        Permite seleccionar y mostrar el gráfico apropiado según el tipo de variables.
+        Versión para dos variables.
+    """
+    
+    print(f"Variables seleccionadas: {var1} y {var2}")
+    
+    var1_cat = var1 in categorical
+    var1_cont = var1 in continuous
+    var1_disc = var1 in discreet
+
+    var2_cat = var2 in categorical
+    var2_cont = var2 in continuous
+    var2_disc = var2 in discreet
+    
+    print("Seleccione la variable para el eje X:")
+    print(f"1. {var1}")
+    print(f"2. {var2}")
+    option = getOption("Opción:", 2)
+    
+    if option == 1:
+        x_var = var1
+        y_var = var2
+    else:
+        x_var = var2
+        y_var = var1
+    
+    #tipos de gráficos - pueden aumentar
+    if var1_cat and var2_cat:
+        types = ["Gráfico de Contingencia"]
+    elif var1_cont and var2_cont:
+        types = ["Gráfico de Dispersión", "Gráfico de Densidad 2D"]
+    elif (var1_cat and (var2_cont or var2_disc)) or (var2_cat and (var1_cont or var1_disc)):
+        types = ["Gráfico de Cajas", "Gráfico de Violin"]
+    elif var1_disc and var2_disc:
+        types = ["Gráfico de Dispersión"]
+    
+    for i, graph in enumerate(types, 1):
+        print(f"{i}. {graph}")
+    option = getOption("Seleccione un tipo de gráfico:", len(types))
+    
+    chosen = types[option-1]
+    
+    # Generar el gráfico seleccionado
+    if chosen == "Gráfico de Contingencia":
+        contingency_table = pd.crosstab(X[x_var], X[y_var])
+        sns.heatmap(contingency_table, annot=True, fmt="d", cmap="YlGnBu")
+        plt.title(f'Gráfico de Contingencia entre {x_var} y {y_var}')
+        plt.xlabel(x_var)
+        plt.ylabel(y_var)
+        plt.show()
+        
+    elif chosen == "Gráfico de Dispersión":
+        plt.figure(figsize=(10, 6))
+        plt.scatter(X[x_var], X[y_var], alpha=0.5)
+        plt.title(f'Gráfico de Dispersión entre {x_var} y {y_var}')
+        plt.xlabel(x_var)
+        plt.ylabel(y_var)
+        plt.show()
+    
+    elif chosen == "Gráfico de Densidad 2D":
+        plt.figure(figsize=(10, 6))
+        sns.kdeplot(x=X[x_var], y=X[y_var], cmap="Blues", shade=True)
+        plt.title(f'Gráfico de Densidad 2D entre {x_var} y {y_var}')
+        plt.xlabel(x_var)
+        plt.ylabel(y_var)
+        plt.show()
+    
+    elif chosen == "Gráfico de Cajas":
+        plt.figure(figsize=(10, 6))
+        sns.boxplot(x=X[x_var], y=X[y_var])
+        plt.title(f'Gráfico de Cajas entre {x_var} y {y_var}')
+        plt.xlabel(x_var)
+        plt.ylabel(y_var)
+        plt.show()
+    
+    elif chosen == "Gráfico de Violin":
+        plt.figure(figsize=(10, 6))
+        sns.violinplot(x=X[x_var], y=X[y_var])
+        plt.title(f'Gráfico de Violin entre {x_var} y {y_var}')
+        plt.xlabel(x_var)
+        plt.ylabel(y_var)
+        plt.show()

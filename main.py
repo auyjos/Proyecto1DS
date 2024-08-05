@@ -114,6 +114,9 @@ while(graphing):
         # Si solo se seleccionó una variable, genera un gráfico para esa variable
         if len(chosen) == 1:
             getPlotSingleVariable(X, chosen[0], chosen[0] in categorical, chosen[0] in continuous, chosen[0] in discreet)
+        # Si se seleccionaron 2 variables, genera un gráfico para esa varaible
+        if len (chosen) == 2:
+            getPlotTwoVariables(X, chosen[0], chosen[1], categorical, continuous, discreet)
 
         # Solicita al usuario si desea generar otro gráfico para la selección actual
         option = getOption("¿Realizar otro gráfico para esta selección?\n1. Sí\n2. No\n", 2)
