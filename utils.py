@@ -263,12 +263,21 @@ def getPlotSingleVariable(X, var, categorical=False, continuous=False, discrete=
 
 def getPlotTwoVariables(X, var1, var2, categorical, continuous, discreet):
     """
-        Permite seleccionar y mostrar el gráfico apropiado según el tipo de variables.
-        Versión para dos variables.
+    Permite seleccionar y mostrar el gráfico apropiado según el tipo de variables.
+    Versión para dos variables.
+
+    Args:
+        X (DataFrame): El DataFrame a analizar.
+        var1 (str): El nombre de la primera variable.
+        var2 (str): El nombre de la segunda variable.
+        categorical (list): Lista de nombres de columnas categóricas.
+        continuous (list): Lista de nombres de columnas continuas.
+        discreet (list): Lista de nombres de columnas discretas.
     """
     
     print(f"Variables seleccionadas: {var1} y {var2}")
     
+    # Determina el tipo de cada variable
     var1_cat = var1 in categorical
     var1_cont = var1 in continuous
     var1_disc = var1 in discreet
@@ -277,6 +286,7 @@ def getPlotTwoVariables(X, var1, var2, categorical, continuous, discreet):
     var2_cont = var2 in continuous
     var2_disc = var2 in discreet
     
+    # Solicita al usuario seleccionar la variable para el eje X
     print("Seleccione la variable para el eje X:")
     print(f"1. {var1}")
     print(f"2. {var2}")
@@ -289,7 +299,7 @@ def getPlotTwoVariables(X, var1, var2, categorical, continuous, discreet):
         x_var = var2
         y_var = var1
     
-    #tipos de gráficos - pueden aumentar
+    # Define los tipos de gráficos disponibles según el tipo de variables
     if var1_cat and var2_cat:
         types = ["Gráfico de Contingencia"]
     elif var1_cont and var2_cont:
@@ -299,14 +309,16 @@ def getPlotTwoVariables(X, var1, var2, categorical, continuous, discreet):
     elif var1_disc and var2_disc:
         types = ["Gráfico de Dispersión"]
     
+    # Muestra las opciones de gráficos disponibles
     for i, graph in enumerate(types, 1):
         print(f"{i}. {graph}")
     option = getOption("Seleccione un tipo de gráfico:", len(types))
     
-    chosen = types[option-1]
+    chosen = types[option-1]  # Obtiene el tipo de gráfico seleccionado
     
-    # Generar el gráfico seleccionado
+    # Genera el gráfico seleccionado
     if chosen == "Gráfico de Contingencia":
+        # Genera un gráfico de contingencia
         contingency_table = pd.crosstab(X[x_var], X[y_var])
         sns.heatmap(contingency_table, annot=True, fmt="d", cmap="YlGnBu")
         plt.title(f'Gráfico de Contingencia entre {x_var} y {y_var}')
@@ -315,6 +327,7 @@ def getPlotTwoVariables(X, var1, var2, categorical, continuous, discreet):
         plt.show()
         
     elif chosen == "Gráfico de Dispersión":
+        # Genera un gráfico de dispersión
         plt.figure(figsize=(10, 6))
         plt.scatter(X[x_var], X[y_var], alpha=0.5)
         plt.title(f'Gráfico de Dispersión entre {x_var} y {y_var}')
@@ -323,6 +336,7 @@ def getPlotTwoVariables(X, var1, var2, categorical, continuous, discreet):
         plt.show()
     
     elif chosen == "Gráfico de Densidad 2D":
+        # Genera un gráfico de densidad 2D
         plt.figure(figsize=(10, 6))
         sns.kdeplot(x=X[x_var], y=X[y_var], cmap="Blues", shade=True)
         plt.title(f'Gráfico de Densidad 2D entre {x_var} y {y_var}')
@@ -331,6 +345,7 @@ def getPlotTwoVariables(X, var1, var2, categorical, continuous, discreet):
         plt.show()
     
     elif chosen == "Gráfico de Cajas":
+        # Genera un gráfico de cajas
         plt.figure(figsize=(10, 6))
         sns.boxplot(x=X[x_var], y=X[y_var])
         plt.title(f'Gráfico de Cajas entre {x_var} y {y_var}')
@@ -339,6 +354,7 @@ def getPlotTwoVariables(X, var1, var2, categorical, continuous, discreet):
         plt.show()
     
     elif chosen == "Gráfico de Violin":
+        # Genera un gráfico de violín
         plt.figure(figsize=(10, 6))
         sns.violinplot(x=X[x_var], y=X[y_var])
         plt.title(f'Gráfico de Violin entre {x_var} y {y_var}')

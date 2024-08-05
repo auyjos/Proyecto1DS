@@ -36,6 +36,7 @@ Este proyecto realiza un Análisis Exploratorio de Datos (EDA) de un archivo CSV
 - `getNulls(X)`: Identifica las variables en las que existen valores nulos y cuántos hay.
 - `getStatistics(X, numerics)`: Muestra las estadísticas descriptivas para cada variable numérica en el DataFrame `X`.
 - `getPlotSingleVariable(X, var, categorical=False, continuous=False, discrete=True)`: Permite seleccionar y mostrar el gráfico apropiado según el tipo de variable.
+- `getPlotTwoVariables(X, var1, var2, categorical, continuous, discreet)`: Permite seleccionar y mostrar el gráfico apropiado según el tipo de variables para dos variables.
 
 ### `main.py`
 - Ejecuta el flujo principal del programa, solicitando al usuario que ingrese el archivo CSV, identificando las variables, mostrando estadísticas descriptivas y generando gráficos.
