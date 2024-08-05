@@ -1,53 +1,62 @@
-import tkinter as tk
-from tkinter import filedialog, messagebox
-from tkinter import ttk
-import pandas as pd
-
+import tkinter as tk  # Importa el módulo tkinter para crear interfaces gráficas
+from tkinter import filedialog, messagebox  # Importa filedialog y messagebox para diálogos de archivos y mensajes
+from tkinter import ttk  # Importa ttk para widgets temáticos
+import pandas as pd  # Importa pandas para manipulación de datos
 
 def load_file():
-    file_path = filedialog.askopenfilename(filetypes=[(
-        "CSV files", "*.csv"), ("Excel files", "*.xlsx"), ("All files", "*.*")])
-    if file_path:
+    """
+    Abre un cuadro de diálogo para seleccionar un archivo y carga el contenido del archivo seleccionado.
+    Soporta archivos CSV y Excel. Muestra mensajes de éxito o error según corresponda.
+    """
+    # Abre un cuadro de diálogo para seleccionar un archivo
+    file_path = filedialog.askopenfilename(filetypes=[
+        ("CSV files", "*.csv"),  # Filtro para archivos CSV
+        ("Excel files", "*.xlsx"),  # Filtro para archivos Excel
+        ("All files", "*.*")  # Filtro para todos los archivos
+    ])
+    
+    if file_path:  # Si se selecciona un archivo
         try:
+            # Carga el archivo según su extensión
             if file_path.endswith('.csv'):
-                data = pd.read_csv(file_path)
+                data = pd.read_csv(file_path)  # Carga archivo CSV
             elif file_path.endswith('.xlsx'):
-                data = pd.read_excel(file_path)
+                data = pd.read_excel(file_path)  # Carga archivo Excel
             else:
-                messagebox.showerror(
-                    "Invalid File", "Unsupported file format!")
+                # Muestra un mensaje de error si el formato del archivo no es soportado
+                messagebox.showerror("Invalid File", "Unsupported file format!")
                 return
-            messagebox.showinfo(
-                "Success", f"File loaded successfully: {file_path}")
-            # Data.head del archivo
+            
+            # Muestra un mensaje de éxito si el archivo se carga correctamente
+            messagebox.showinfo("Success", f"File loaded successfully: {file_path}")
+            # Imprime las primeras filas del archivo cargado
             print(data.head())
         except Exception as e:
-            messagebox.showerror(
-                "Error", f"An error occurred while loading the file: {str(e)}")
+            # Muestra un mensaje de error si ocurre un problema al cargar el archivo
+            messagebox.showerror("Error", f"An error occurred while loading the file: {str(e)}")
 
-
-# Crea la ventana
+# Crea la ventana principal
 root = tk.Tk()
-root.title("File Loader")
+root.title("File Loader")  # Título de la ventana
 
-# Set the size of the window
+# Establece el tamaño de la ventana
 root.geometry('800x400')
 
-# Theme
+# Aplica un tema a los widgets
 style = ttk.Style()
 style.theme_use('xpnative')
 
-# Frame para widgets
+# Crea un marco para los widgets con padding
 frame = ttk.Frame(root, padding="10 10 10 10")
-frame.pack(fill=tk.BOTH, expand=True)
+frame.pack(fill=tk.BOTH, expand=True)  # Expande el marco para llenar la ventana
 
-# Label
+# Crea una etiqueta y la añade al marco
 label = ttk.Label(frame, text="Select a file to load:")
-label.pack(pady=10)
+label.pack(pady=10)  # Añade padding vertical
 
-# Creación de botón para cargar
+# Crea un botón para cargar archivos y lo añade al marco
 load_button = ttk.Button(frame, text="Load File", command=load_file)
-load_button.pack(pady=20)
+load_button.pack(pady=20)  # Añade padding vertical
 
-# Loop de evento
+# Inicia el loop de eventos de la ventana
 root.mainloop()
