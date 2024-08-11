@@ -1,45 +1,51 @@
-import tkinter as tk  # Importa el módulo tkinter para crear interfaces gráficas
-from tkinter import filedialog, messagebox  # Importa filedialog y messagebox para diálogos de archivos y mensajes
-from tkinter import ttk  # Importa ttk para widgets temáticos
-import pandas as pd  # Importa pandas para manipulación de datos
+import tkinter as tk
+from tkinter import filedialog, messagebox, ttk
+import pandas as pd
+# Asegúrate de tener esta función en el archivo de análisis
+from analysis_module import analyze_data
+
 
 def load_file():
-    """
-    Abre un cuadro de diálogo para seleccionar un archivo y carga el contenido del archivo seleccionado.
-    Soporta archivos CSV y Excel. Muestra mensajes de éxito o error según corresponda.
-    """
-    # Abre un cuadro de diálogo para seleccionar un archivo
     file_path = filedialog.askopenfilename(filetypes=[
-        ("CSV files", "*.csv"),  # Filtro para archivos CSV
-        ("Excel files", "*.xlsx"),  # Filtro para archivos Excel
-        ("All files", "*.*")  # Filtro para todos los archivos
+        ("CSV files", "*.csv"),
+        ("Excel files", "*.xlsx"),
+        ("All files", "*.*")
     ])
-    
-    if file_path:  # Si se selecciona un archivo
+
+    if file_path:
         try:
-            # Carga el archivo según su extensión
             if file_path.endswith('.csv'):
-                data = pd.read_csv(file_path)  # Carga archivo CSV
+                data = pd.read_csv(file_path)
             elif file_path.endswith('.xlsx'):
-                data = pd.read_excel(file_path)  # Carga archivo Excel
+                data = pd.read_excel(file_path)
             else:
-                # Muestra un mensaje de error si el formato del archivo no es soportado
-                messagebox.showerror("Invalid File", "Unsupported file format!")
+                messagebox.showerror(
+                    "Invalid File", "Unsupported file format!")
                 return
-            
-            # Muestra un mensaje de éxito si el archivo se carga correctamente
-            messagebox.showinfo("Success", f"File loaded successfully: {file_path}")
-            # Imprime las primeras filas del archivo cargado
-            print(data.head())
+
+            messagebox.showinfo(
+                "Success", f"File loaded successfully: {file_path}")
+            # Habilita el botón de análisis
+            analyze_button['state'] = tk.NORMAL
+            # Almacena el DataFrame en un atributo del botón para usarlo en la función de análisis
+            analyze_button.data = data
         except Exception as e:
-            # Muestra un mensaje de error si ocurre un problema al cargar el archivo
-            messagebox.showerror("Error", f"An error occurred while loading the file: {str(e)}")
+            messagebox.showerror(
+                "Error", f"An error occurred while loading the file: {str(e)}")
+
+
+def analyze_data_gui():
+    if hasattr(analyze_button, 'data'):
+        data = analyze_button.data
+        analyze_data(data)  # Llama a la función de análisis de datos
+    else:
+        messagebox.showwarning(
+            "No Data", "No file loaded. Please load a file first.")
+
 
 # Crea la ventana principal
 root = tk.Tk()
-root.title("File Loader")  # Título de la ventana
-
-# Establece el tamaño de la ventana
+root.title("Herramienta para anális de datos")
 root.geometry('800x400')
 
 # Aplica un tema a los widgets
@@ -48,15 +54,20 @@ style.theme_use('xpnative')
 
 # Crea un marco para los widgets con padding
 frame = ttk.Frame(root, padding="10 10 10 10")
-frame.pack(fill=tk.BOTH, expand=True)  # Expande el marco para llenar la ventana
+frame.pack(fill=tk.BOTH, expand=True)
 
 # Crea una etiqueta y la añade al marco
-label = ttk.Label(frame, text="Select a file to load:")
-label.pack(pady=10)  # Añade padding vertical
+label = ttk.Label(frame, text="Selecciona el archivo:")
+label.pack(pady=10)
 
 # Crea un botón para cargar archivos y lo añade al marco
-load_button = ttk.Button(frame, text="Load File", command=load_file)
-load_button.pack(pady=20)  # Añade padding vertical
+load_button = ttk.Button(frame, text="Cargar archivo", command=load_file)
+load_button.pack(pady=10)
+
+# Crea un botón para realizar el análisis de datos
+analyze_button = ttk.Button(
+    frame, text="Analizar datos", command=analyze_data_gui, state=tk.DISABLED)
+analyze_button.pack(pady=10)
 
 # Inicia el loop de eventos de la ventana
 root.mainloop()

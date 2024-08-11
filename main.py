@@ -15,7 +15,7 @@ import numpy as np  # Librería para operaciones numéricas
 import matplotlib.pyplot as plt  # Librería para generación de gráficos
 from utils import *  # Importa funciones auxiliares desde utils.py
 import sys  # Librería para manipulación del sistema
-
+import interfaz
 # Solicita al usuario ingresar la ruta del archivo CSV a analizar
 path = input("Ingrese el archivo csv a analizar: ")
 # Lee el archivo CSV y lo almacena en un DataFrame
@@ -51,7 +51,8 @@ null_values = getNulls(X)
 if len(null_values) > 0:
     print("\nEl dataset contiene valores nulos:")
     for t in null_values:
-        print(f"La columna '{t[0]}' contiene {t[1]} valores nulos ({t[2]*100:.2f}% del total).")
+        print(f"La columna '{t[0]}' contiene {
+              t[1]} valores nulos ({t[2]*100:.2f}% del total).")
 
 # Combina las variables continuas y discretas en una sola lista
 numerics = continuous + discreet
@@ -82,7 +83,7 @@ if option == 2:
 graphing = True
 
 # Bucle principal para la generación de gráficos
-while(graphing):
+while (graphing):
 
     chosen = []  # Lista para almacenar las variables seleccionadas
     choosing = True  # Variable para controlar el bucle de selección de variables
@@ -101,32 +102,37 @@ while(graphing):
         chosen.append(var)  # Añade la variable seleccionada a la lista
 
         # Solicita al usuario si desea seleccionar una variable adicional
-        option = getOption("¿Seleccionar variable adicional?\n1. Sí\n2. No\n", 2)
+        option = getOption(
+            "¿Seleccionar variable adicional?\n1. Sí\n2. No\n", 2)
 
         if option == 2:
             choosing = False  # Termina el bucle de selección de variables
 
-    graphingThis = True  # Variable para controlar el bucle de generación de gráficos para la selección actual
+    # Variable para controlar el bucle de generación de gráficos para la selección actual
+    graphingThis = True
 
     # Bucle para la generación de gráficos para la selección actual
     while graphingThis:
 
         # Si solo se seleccionó una variable, genera un gráfico para esa variable
         if len(chosen) == 1:
-            getPlotSingleVariable(X, chosen[0], chosen[0] in categorical, chosen[0] in continuous, chosen[0] in discreet)
+            getPlotSingleVariable(
+                X, chosen[0], chosen[0] in categorical, chosen[0] in continuous, chosen[0] in discreet)
         # Si se seleccionaron 2 variables, genera un gráfico para esa varaible
-        if len (chosen) == 2:
-            getPlotTwoVariables(X, chosen[0], chosen[1], categorical, continuous, discreet)
+        if len(chosen) == 2:
+            getPlotTwoVariables(
+                X, chosen[0], chosen[1], categorical, continuous, discreet)
 
         # Solicita al usuario si desea generar otro gráfico para la selección actual
-        option = getOption("¿Realizar otro gráfico para esta selección?\n1. Sí\n2. No\n", 2)
+        option = getOption(
+            "¿Realizar otro gráfico para esta selección?\n1. Sí\n2. No\n", 2)
 
         if option == 2:
             graphingThis = False  # Termina el bucle de generación de gráficos para la selección actual
 
     # Solicita al usuario si desea generar gráficos para otra selección de variables
-    option = getOption("¿Realizar graficar otra selección de variables?\n1. Sí\n2. No\n", 2)
+    option = getOption(
+        "¿Realizar graficar otra selección de variables?\n1. Sí\n2. No\n", 2)
     if option == 2:
         graphing = False  # Termina el bucle principal de generación de gráficos
         print("¡Gracias por utilizar el programa!")  # Mensaje de despedida
-        
