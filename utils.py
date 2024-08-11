@@ -116,6 +116,7 @@ def identifyVariables(X):
 
 
 def getNulls(X):
+    
     """
     Para un DataFrame dado, identifica las variables en las que existan valores nulos y cuántos hay.
 

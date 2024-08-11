@@ -15,7 +15,6 @@ import numpy as np  # Librería para operaciones numéricas
 import matplotlib.pyplot as plt  # Librería para generación de gráficos
 from utils import *  # Importa funciones auxiliares desde utils.py
 import sys  # Librería para manipulación del sistema
-import interfaz
 # Solicita al usuario ingresar la ruta del archivo CSV a analizar
 path = input("Ingrese el archivo csv a analizar: ")
 # Lee el archivo CSV y lo almacena en un DataFrame
@@ -27,7 +26,7 @@ if type(X) == str:
     sys.exit()  # Termina la ejecución del programa
 
 # Identifica las variables categóricas, continuas y discretas en el DataFrame
-categorical, continuous, discreet = identifyVariables(X)
+categorical, continuous, discreet = identifyVariables(X.copy())
 
 # Imprime las variables categóricas
 print("\nVariables categóricas:")
@@ -45,14 +44,14 @@ for i, col in enumerate(discreet, 1):
     print(f"{i}. {col}")
 
 # Obtiene las columnas con valores nulos y la cantidad de nulos en cada una
+
 null_values = getNulls(X)
 
 # Verifica si existen valores nulos en el DataFrame
 if len(null_values) > 0:
     print("\nEl dataset contiene valores nulos:")
     for t in null_values:
-        print(f"La columna '{t[0]}' contiene {
-              t[1]} valores nulos ({t[2]*100:.2f}% del total).")
+        print(f"La columna '{t[0]}' contiene {t[1]} valores nulos ({t[2]*100:.2f}% del total).")
 
 # Combina las variables continuas y discretas en una sola lista
 numerics = continuous + discreet

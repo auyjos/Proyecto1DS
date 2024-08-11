@@ -25,12 +25,18 @@ def show_eda_results(X, categorical, continuous, discreet):
     text_area.config(state='disabled')
 
     # Obtener y mostrar las variables
-    vars_str = "\nVariables categóricas:\n" + \
-        "\n".join([f"{i+1}. {col}" for i, col in enumerate(categorical)])
-    vars_str += "\n\nVariables continuas:\n" + \
-        "\n".join([f"{i+1}. {col}" for i, col in enumerate(continuous)])
-    vars_str += "\n\nVariables discretas:\n" + \
-        "\n".join([f"{i+1}. {col}" for i, col in enumerate(discreet)])
+    
+    vars_str = ""
+    
+    if len(categorical) > 0:
+        vars_str += "\nVariables categóricas:\n" + \
+            "\n".join([f"{i+1}. {col}" for i, col in enumerate(categorical)])
+    if len(continuous) > 0:
+        vars_str += "\n\nVariables continuas:\n" + \
+            "\n".join([f"{i+1}. {col}" for i, col in enumerate(continuous)])
+    if len(discreet) > 0:
+        vars_str += "\n\nVariables discretas:\n" + \
+            "\n".join([f"{i+1}. {col}" for i, col in enumerate(discreet)])
 
     # Mostrar variables en el Text widget
     text_area.config(state='normal')
@@ -68,12 +74,13 @@ def show_eda_results(X, categorical, continuous, discreet):
 def generate_graphs(X, categorical, continuous, discreet):
     def handle_variable_selection():
         chosen = []
+        max_chosen = 2
         while True:
+            
             variables = [col for col in X.columns if col not in chosen]
             vars_str = "\n".join(
                 [f"{i+1}. {col}" for i, col in enumerate(variables)])
-            option = simpledialog.askinteger("Seleccionar Variable", f"Selecciona una variable:\n{
-                                             vars_str}", minvalue=1, maxvalue=len(variables))
+            option = simpledialog.askinteger("Seleccionar Variable", f"Selecciona una variable:\n{vars_str}", minvalue=1, maxvalue=len(variables))
 
             if option is None:
                 messagebox.showwarning(
@@ -81,12 +88,16 @@ def generate_graphs(X, categorical, continuous, discreet):
                 continue
 
             if 1 <= option <= len(variables):
+                max_chosen -= 1
                 var = variables[option - 1]
                 chosen.append(var)
             else:
                 messagebox.showwarning(
                     "Selección Inválida", "La opción seleccionada no es válida.")
                 continue
+            
+            if max_chosen <= 0:
+                break
 
             option = simpledialog.askinteger(
                 "Seleccionar Variable Adicional", "¿Seleccionar otra variable?\n1. Sí\n2. No", minvalue=1, maxvalue=2)
@@ -150,5 +161,5 @@ def generate_graphs(X, categorical, continuous, discreet):
 
 
 def analyze_data(X):
-    categorical, continuous, discreet = identifyVariables(X)
+    categorical, continuous, discreet = identifyVariables(X.copy())
     show_eda_results(X, categorical, continuous, discreet)
