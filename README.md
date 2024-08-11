@@ -10,7 +10,7 @@ Este proyecto realiza un Análisis Exploratorio de Datos (EDA) de un archivo CSV
 ## Instalación
 1. Clona el repositorio:
     ```sh
-    git clone <URL_DEL_REPOSITORIO>
+    git clone git@github.com:auyjos/Proyecto1DS.git
     ```
 2. Instala las dependencias:
     ```sh
