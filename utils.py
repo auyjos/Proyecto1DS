@@ -174,6 +174,93 @@ def getStatistics(X, numerics):
 
     return statistics  # Retorna el diccionario con las estadísticas
 
+def getPlotSingleVariableTypes(varType):
+    """
+    Devuelve los tipos de gráficos disponibles para una única variable.
+    Arg:
+        varType (str): El tipo de variable a graficar (CAT | CONT | DISC).
+    """
+
+    # Define los tipos de gráficos disponibles según el tipo de variable
+    if varType == "CAT":
+        return ["Gráfico de Barras", "Gráfico de Torta", "Gráfico de Pareto"]
+    elif varType == "CONT":
+        return ["Histograma", "Gráfico de Densidad", "Box Plot"]
+    else:  # Si es discreta
+        return ["Gráfico de Barras", "Histograma",
+                 "Gráfico de Pareto", "Box Plot"]
+        
+def getPlotByType(type, X, var, font_size):
+    """
+    Devuelve el gráfico generado según el tipo indicado.
+    Args:
+        type (str): El tipo de gráfico a crear.
+        X (dataFrame): DataFrame con los datos.
+        var (str): Nombre de la columna en X para graficar.
+    """
+    fig, ax = plt.subplots(figsize=(4,3))
+
+    if type == "Gráfico de Barras":
+        frequency = X[var].value_counts()
+        ax.bar(frequency.index, frequency.values, color='skyblue')
+        ax.set_title(f'Frecuencia de la variable {var}')
+        ax.set_xlabel(var)
+        ax.set_ylabel('Frecuencia')
+        ax.tick_params(axis='x', rotation=45)
+
+    elif type == "Histograma":
+        ax.hist(X[var], bins=10, color='skyblue', edgecolor='black')
+        ax.set_title(f'Histograma de la variable {var}')
+        ax.set_xlabel(var)
+        ax.set_ylabel('Frecuencia')
+
+    elif type == "Gráfico de Pareto":
+        frequency = X[var].value_counts()
+        frequency = frequency.sort_values(ascending=False)
+        porcentaje_acumulado = frequency.cumsum() / frequency.sum() * 100
+        fig, ax1 = plt.subplots(figsize=(4,3))
+        ax1.bar(frequency.index.astype(str), frequency,
+                color='skyblue', edgecolor='black')
+        ax1.set_xlabel(var)
+        ax1.set_ylabel('Frecuencia', color='skyblue')
+        ax1.tick_params(axis='y', labelcolor='skyblue')
+        ax2 = ax1.twinx()
+        ax2.plot(frequency.index.astype(str), porcentaje_acumulado,
+                 color='red', marker='o', linestyle='--')
+        ax2.set_ylabel('Porcentaje Acumulado (%)', color='red')
+        ax2.tick_params(axis='y', labelcolor='red')
+        plt.title(f'Gráfico de Pareto de la variable {var}')
+        ax1.title.set_fontsize(font_size)
+        ax1.xaxis.label.set_fontsize(font_size)
+        ax1.yaxis.label.set_fontsize(font_size)
+        ax1.tick_params(axis='both', which='major', labelsize=font_size)
+        ax2.title.set_fontsize(font_size)
+        ax2.xaxis.label.set_fontsize(font_size)
+        ax2.yaxis.label.set_fontsize(font_size)
+        ax2.tick_params(axis='both', which='major', labelsize=font_size)
+
+    elif type == "Box Plot":
+        ax.boxplot(X[var].dropna(), vert=False, patch_artist=True,
+                    boxprops=dict(facecolor='skyblue', color='black'),
+                    whiskerprops=dict(color='black'),
+                    capprops=dict(color='black'),
+                    medianprops=dict(color='red'))
+        ax.set_title(f'Box Plot de la variable {var}')
+        ax.set_xlabel(var)
+
+    elif type == "Gráfico de Torta":
+        frequency = X[var].value_counts()
+        ax.pie(frequency, labels=frequency.index, autopct='%1.1f%%',
+               colors=plt.cm.Paired(range(len(frequency))))
+        ax.set_title(f'Gráfico de Torta de la variable {var}')
+
+    elif type == "Gráfico de Densidad":
+        sns.kdeplot(X[var].dropna(), fill=True, color='skyblue', ax=ax)
+        ax.set_title(f'Gráfico de Densidad de la variable {var}')
+        ax.set_xlabel(var)
+        ax.set_ylabel('Densidad')
+
+    return fig, ax
 
 def getPlotSingleVariable(X, var, categorical=False, continuous=False, discrete=True):
     """
