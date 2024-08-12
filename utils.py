@@ -372,6 +372,8 @@ def getPlotTwoVariables(X, var1, var2, categorical=None, continuous=None, discre
         discreet (list): Lista de nombres de columnas discretas.
     """
     
+    plt.close('all')
+    
     if categorical == None or continuous == None or discreet == None:
         categorical, continuous, discreet = identifyVariables(X)
 
