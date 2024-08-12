@@ -9,18 +9,16 @@ from utils import *
 class CollapsibleFrame(ttk.Frame):
     def __init__(self, parent, title, *args, **kwargs):
         super().__init__(parent, *args, **kwargs)
-        self._visible = False  # Start as collapsed
+        self._visible = False
         self._title = title
 
-        # Create the header with a toggle button
         self.header = ttk.Frame(self)
         self.toggle_button = ttk.Button(self.header, text=self._title, command=self.toggle)
         self.toggle_button.pack(fill='x')
         self.header.pack(fill='x')
 
-        # Create the content area
         self.content = ttk.Frame(self)
-        self.content.pack_forget()  # Start hidden
+        self.content.pack_forget()
         
         self.content_grid = ttk.Frame(self.content)
         self.content_grid.pack(fill="both", expand=True)
@@ -31,14 +29,13 @@ class CollapsibleFrame(ttk.Frame):
         self.button_frame = ttk.Frame(self.content_grid)
         self.button_frame.grid(row=0, column=1, sticky='nsew', padx=5, pady=5)
 
-        # Configure grid weights to ensure proper resizing
         self.content_grid.grid_columnconfigure(0, weight=1)
-        self.content_grid.grid_columnconfigure(1, weight=2)  # Adjust the weight for the button section
+        self.content_grid.grid_columnconfigure(1, weight=2) 
         self.content_grid.grid_rowconfigure(0, weight=1)
 
         self.graph_type = tk.StringVar(value="Gráfico de Barras")
-        self.data = None  # To store data for plotting
-        self.variable = None  # To store the variable name for plotting
+        self.data = None  
+        self.variable = None  
 
     def toggle(self):
         if self._visible:
@@ -53,7 +50,6 @@ class CollapsibleFrame(ttk.Frame):
         self.data = data
         self.variable = variable
 
-        # Add labels for statistics
         labels = ["Media:", "Mediana:", "Moda:", "Desviación estándar:", "Valores nulos"]
         values = [f"{st[0]}",
                   f"{st[1]}",
@@ -64,7 +60,6 @@ class CollapsibleFrame(ttk.Frame):
             ttk.Label(self.stats_frame, text=label).grid(row=row, column=0, sticky='w', padx=5, pady=2)
             ttk.Label(self.stats_frame, text=value).grid(row=row, column=1, sticky='w', padx=5, pady=2)
 
-        # Add a menu to choose the graph type
         self.graph_menu = ttk.Combobox(self.button_frame, values=getPlotSingleVariableTypes(varType), textvariable=self.graph_type, state='readonly')
         self.graph_menu.pack(pady=5)
         
@@ -72,13 +67,10 @@ class CollapsibleFrame(ttk.Frame):
         self.graph_button.pack(pady=10)
         
     def generate_graph(self):
-        # Get the selected graph type
         graph_type = self.graph_type.get()
 
-        # Define font size
-        font_size = 8  # Adjust this value to your preference
+        font_size = 8  
 
-        # Get the figure and axes from the getPlotByType function
         if self.data is not None and self.variable is not None:
             fig, ax = getPlotByType(graph_type, self.data, self.variable, font_size)
         else:
@@ -86,26 +78,21 @@ class CollapsibleFrame(ttk.Frame):
             ax.text(0.5, 0.5, 'No data available', horizontalalignment='center', verticalalignment='center', fontsize=font_size)
             ax.set_title('Error', fontsize=font_size)
         
-        # Adjust the font size for axis labels and ticks if needed
         ax.title.set_fontsize(font_size)
         ax.xaxis.label.set_fontsize(font_size)
         ax.yaxis.label.set_fontsize(font_size)
         ax.tick_params(axis='both', which='major', labelsize=font_size)
         
-        # Clear the existing widgets in the button frame and add the new graph
         for widget in self.button_frame.winfo_children():
             widget.destroy()
 
-        # Create a FigureCanvasTkAgg widget to display the graph
         canvas = FigureCanvasTkAgg(fig, master=self.button_frame)
         canvas.draw()
         canvas.get_tk_widget().pack(fill='both', expand=True)
 
 def create_tab_content(parent, collapsibles, nulls, statistics, data, varType):
-    # Create a frame to contain the collapsibles and add a scrollbar to it
     collapsibles_container = ttk.Frame(parent)
     
-    # Create a canvas and vertical scrollbar
     canvas = tk.Canvas(collapsibles_container)
     scrollbar = ttk.Scrollbar(collapsibles_container, orient="vertical", command=canvas.yview)
     
@@ -126,15 +113,13 @@ def create_tab_content(parent, collapsibles, nulls, statistics, data, varType):
         collapsible.pack(fill='x')
     
     collapsibles_container.pack(fill="both", expand=True)
-    return collapsibles_container  # Return the container instead of canvas directly
+    return collapsibles_container  
 
 def show_main_window(X):
-    # Create the main application window
     root = tk.Tk()
     root.title("Data Science - Proyecto 1")
     root.geometry("800x600")
 
-    # Create a notebook (tabs container)
     notebook = ttk.Notebook(root)
     style = ttk.Style()
     style.configure("TNotebook.Tab", padding=[20, 10], font=('Arial', 14))
@@ -153,7 +138,6 @@ def show_main_window(X):
             tab_content = create_tab_content(notebook, discreet, null_values, statistics, X, "DISC")
         notebook.add(tab_content, text=tab_name)
 
-    # Pack the notebook (add it to the main window)
     notebook.pack(expand=True, fill="both")
 
     def update_tabs(event):
@@ -166,7 +150,6 @@ def show_main_window(X):
     root.mainloop()
 
 def load_csv_file():
-    # Create a temporary window to load the CSV file
     temp_window = tk.Tk()
     temp_window.title("Cargar CSV")
     temp_window.geometry("300x100")
@@ -174,7 +157,6 @@ def load_csv_file():
     def on_load():
         file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv")])
         if file_path:
-            # You can process the file_path if needed
             data = pd.read_csv(file_path)
             temp_window.destroy()
             show_main_window(data)
@@ -184,5 +166,4 @@ def load_csv_file():
 
     temp_window.mainloop()
 
-# Start the application with the CSV file load window
 load_csv_file()

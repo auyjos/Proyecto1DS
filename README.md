@@ -17,17 +17,26 @@ Este proyecto realiza un Análisis Exploratorio de Datos (EDA) de un archivo CSV
     pip install pandas numpy matplotlib seaborn
     ```
 
-## Uso
+## Uso en consola
 1. Ejecuta el archivo `main.py` para iniciar el análisis de datos:
     ```sh
     python main.py
     ```
 2. Sigue las instrucciones en la consola para cargar el archivo CSV y realizar el análisis.
 
+## Uso en interfaz gráfica
+1. Ejecuta el archivo `gui.py` para iniciar el análisis de datos:
+    ```sh
+    python main.py
+    ```
 ## Funciones Principales
 
 ### `interfaz.py`
 - `load_file()`: Abre un cuadro de diálogo para seleccionar un archivo CSV o Excel y carga los datos en un DataFrame de pandas.
+
+### `gui.py`
+- `CollapsibleFrame`: Clase que permite instanciar un elemento colapsable dentro de la ventana.
+
 
 ### `utils.py`
 - `getOption(menu, options)`: Muestra un menú y permite seleccionar entre las opciones disponibles, verificando que sea una opción válida.
