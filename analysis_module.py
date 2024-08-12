@@ -46,8 +46,7 @@ def show_eda_results(X, categorical, continuous, discreet):
     # Obtener y mostrar valores nulos
     null_values = getNulls(X)
     if len(null_values) > 0:
-        nulls_str = "\n".join([f"La columna '{t[0]}' contiene {t[1]} valores nulos ({
-                              t[2]*100:.2f}% del total)." for t in null_values])
+        nulls_str = "\n".join([f"La columna '{t[0]}' contiene {t[1][0]} valores nulos ({t[1][1]*100:.2f}% del total)." for t in null_values])
         text_area.insert('end', "Valores Nulos:\n")
         text_area.insert(
             'end', f"El conjunto de datos contiene valores nulos:\n{nulls_str}\n\n")

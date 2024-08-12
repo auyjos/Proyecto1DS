@@ -71,7 +71,7 @@ def readCSV(path):
         return f"Se produjo un error inesperado: {e}"
 
 
-def identifyVariables(X):
+def identifyVariables(dataset):
     """
     Identifica las variables del DataFrame X como:
         - Categóricas
@@ -84,6 +84,7 @@ def identifyVariables(X):
     Returns:
         list: Una lista de tres listas que contienen los nombres de las columnas categóricas, continuas y discretas.
     """
+    X = dataset.copy()
     columnas_continuas = []  # Lista para almacenar las columnas numéricas continuas
     columnas_discretas = []  # Lista para almacenar las columnas numéricas discretas
     columnas_categoricas = []  # Lista para almacenar las columnas categóricas
@@ -130,8 +131,9 @@ def getNulls(X):
     nulls = [(col, X.isnull().sum()[col], X.isnull().sum()
               [col] / X.shape[0]) for col in X.columns]
     # Filtra las columnas que tienen al menos un valor nulo
-    nulls = [n for n in nulls if n[1] > 0]
-    return nulls  # Retorna la lista de tuplas
+    # nulls = [n for n in nulls if n[1] > 0]
+    nulls = {col: [count, percentage] for col, count, percentage in nulls if count > 0}
+    return nulls  # Retorna el diccionario
 
 
 def getStatistics(X, numerics):
@@ -152,14 +154,23 @@ def getStatistics(X, numerics):
 
     # Itera sobre cada columna numérica
     for col in numerics:
-        mean = X[col].mean()  # Calcula la media
-        median = X[col].median()  # Calcula la mediana
-        mode = X[col].mode().values[0] if not X[col].mode(
-        ).empty else None  # Calcula la moda
-        std = X[col].std()  # Calcula la desviación estándar
+        # Intentar convertir la columna a valores numéricos, forzando a NaN los valores no convertibles
+        X[col] = pd.to_numeric(X[col], errors='coerce')
+        
+        # Elimina filas con NaN en la columna actual
+        X_cleaned = X[col].dropna()
+        
+        # Calcula estadísticas si la columna no está vacía
+        if not X_cleaned.empty:
+            mean = X_cleaned.mean()  # Calcula la media
+            median = X_cleaned.median()  # Calcula la mediana
+            mode = X_cleaned.mode().values[0] if not X_cleaned.mode().empty else None  # Calcula la moda
+            std = X_cleaned.std()  # Calcula la desviación estándar
 
-        # Almacena las estadísticas en el diccionario
-        statistics[col] = (mean, median, mode, std)
+            # Almacena las estadísticas en el diccionario
+            statistics[col] = (mean, median, mode, std)
+        else:
+            statistics[col] = (None, None, None, None)
 
     return statistics  # Retorna el diccionario con las estadísticas
 

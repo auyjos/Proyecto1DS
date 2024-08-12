@@ -50,8 +50,8 @@ null_values = getNulls(X)
 # Verifica si existen valores nulos en el DataFrame
 if len(null_values) > 0:
     print("\nEl dataset contiene valores nulos:")
-    for t in null_values:
-        print(f"La columna '{t[0]}' contiene {t[1]} valores nulos ({t[2]*100:.2f}% del total).")
+    for t in null_values.items():
+        print(f"La columna '{t[0]}' contiene {t[1][0]} valores nulos ({t[1][1]*100:.2f}% del total).")
 
 # Combina las variables continuas y discretas en una sola lista
 numerics = continuous + discreet
