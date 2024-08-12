@@ -358,7 +358,7 @@ def getPlotSingleVariable(X, var, categorical=False, continuous=False, discrete=
     plt.show()
 
 
-def getPlotTwoVariables(X, var1, var2, categorical, continuous, discreet):
+def getPlotTwoVariables(X, var1, var2, categorical=None, continuous=None, discreet=None):
     """
     Permite seleccionar y mostrar el gráfico apropiado según el tipo de variables.
     Versión para dos variables.
@@ -371,10 +371,12 @@ def getPlotTwoVariables(X, var1, var2, categorical, continuous, discreet):
         continuous (list): Lista de nombres de columnas continuas.
         discreet (list): Lista de nombres de columnas discretas.
     """
+    
+    if categorical == None or continuous == None or discreet == None:
+        categorical, continuous, discreet = identifyVariables(X)
 
     if var1 not in X.columns or var2 not in X.columns:
-        messagebox.showerror("Error", f"Las variables {var1} o {
-                             var2} no están en el DataFrame")
+        messagebox.showerror("Error", f"Las variables {var1} o {var2} no están en el DataFrame")
         return
 
     # Determina el tipo de cada variable

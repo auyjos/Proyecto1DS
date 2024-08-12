@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, filedialog
+from tkinter import ttk, filedialog, messagebox
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import numpy as np
@@ -147,7 +147,35 @@ def show_main_window(X):
         style.configure("TNotebook.Tab", width=tab_width)
 
     root.bind("<Configure>", update_tabs)
+
+    # Adding a button in the bottom right corner
+    corner_button = ttk.Button(root, text="Gráfica de 2 variables.", command=lambda: open_selection_window(X))
+    corner_button.place(relx=1.0, rely=1.0, anchor='se', x=-10, y=-10)
+
     root.mainloop()
+
+def open_selection_window(X):
+    columns = X.columns
+    selection_window = tk.Toplevel()
+    selection_window.title("Seleccionar variables")
+    selection_window.geometry("300x400")
+
+    listbox = tk.Listbox(selection_window, selectmode=tk.MULTIPLE)
+    for col in columns:
+        listbox.insert(tk.END, col)
+    listbox.pack(fill="both", expand=True, padx=10, pady=10)
+
+    def confirm_selection():
+        selected_indices = listbox.curselection()
+        if len(selected_indices) == 2:
+            selected_items = [columns[i] for i in selected_indices]
+            getPlotTwoVariables(X, selected_items[0], selected_items[1])
+            selection_window.destroy()
+        else:
+            messagebox.showwarning("Error", "Debes seleccionar exactamente 2 variables.")
+
+    confirm_button = ttk.Button(selection_window, text="Confirmar", command=confirm_selection)
+    confirm_button.pack(pady=20)
 
 def load_csv_file():
     temp_window = tk.Tk()
